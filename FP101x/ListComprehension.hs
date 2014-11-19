@@ -5,6 +5,10 @@ sorted :: Ord a => [a] -> Bool
 sorted xs =
    and [x <= y | (x,y) <- pairs xs]
 
+zipPositions :: Eq a => a -> [a] -> [(a,Int)]
+zipPositions x xs = zip xs [0..n]
+   where n = length xs -1 
+
 positions :: Eq a => a -> [a] -> [Int]
 positions x xs =
    [i | (x', i) <- zip xs [0..n], x == x']
@@ -55,3 +59,11 @@ pythsC n = [(x,y,z) | x <- [1..n], y <- [1..n], z <- [1..n], x^2 + y^2 == z^2]
 pythsD :: Int -> [(Int, Int, Int)]
 pythsD n = [(x,y,z) | x <- [1..n], y <- [1..x], z <- [1..y]]
 
+{-
+concat' :: [[a]] -> [a]
+concat' xss = [ x | x <- xs, xs <- xss]
+-}
+
+--implement an occurrence function to count how many times an element occurs in a list
+occurrence :: [a] -> [(a, Int)]
+-- occurrence [x | x <- [1, 2, 3, 4, 5], y <- [1..x], z <- [1..y]] = [(1,1), (2,3), (3,6), (4,10), (5,15)]
