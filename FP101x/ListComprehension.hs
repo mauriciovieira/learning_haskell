@@ -59,6 +59,46 @@ pythsC n = [(x,y,z) | x <- [1..n], y <- [1..n], z <- [1..n], x^2 + y^2 == z^2]
 pythsD :: Int -> [(Int, Int, Int)]
 pythsD n = [(x,y,z) | x <- [1..n], y <- [1..x], z <- [1..y]]
 
+
+factors :: Int -> [Int]
+factors n = [x | x <- [1..n], n `mod` x == 0]
+
+isPerfect :: Int -> Bool
+isPerfect n = sum (init (factors n)) == n
+
+perfects :: Int -> [Int]
+perfects n = [x | x <- [1..n], isPerfect x]
+
+exercize4 = [(x,y) | x <- [1,2,3], y <- [4,5,6]]
+exercize4A = [z | z <- [[(x,y) | y <- [4,5,6]] | x <- [1,2,3]]]
+--exercize4B = concat [[[(x,y)]] | x <- (1,2,3) | y <- [4,5,6]]
+--exercize4C = concat [[(x,y) | y <- [4,5,6]] | x <- [1,2,3]
+exercize4D = concat [[(x,y) | y <- [4,5,6]] | x <- [1,2,3]]
+
+find :: (Eq a) => a -> [(a,b)] -> [b]
+find k t = [v | (k', v) <- t, k == k']
+
+positions5A :: (Eq a) => a -> [a] -> [Int]
+positions5A x xs = find x (zip xs [0..n])
+  where n = length xs - 1
+
+{-
+positions5B :: (Eq a) => a -> [a] -> [Int]
+positions5B x xs = find x xs
+-}
+
+{-
+positions5C :: (Eq a) => a -> [a] -> [Int]
+positions5C x xs = find x (zipWith (+) xs [0..n])
+  where n = length xs - 1
+-}
+
+{-
+positions5D :: (Eq a) => a -> [a] -> [Int]
+positions5D x xs = find n (zip xs [0 .. x])
+  where n = length xs - 1
+-}
+
 {-
 concat' :: [[a]] -> [a]
 concat' xss = [ x | x <- xs, xs <- xss]
