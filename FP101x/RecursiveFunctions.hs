@@ -32,7 +32,7 @@ drop' n (_:xs) = drop (n-1) xs
 
 (!!) :: [a] -> Int -> a
 (x:xs) !! 0 = x
-(x:xs) !! n = xs !! (n-1)
+(_:xs) !! n = xs !! (n-1)
 [] !! _ = error "Out of bounds"
 
 elem' :: Eq a => a -> [a] -> Bool
@@ -55,3 +55,9 @@ concatR (x:xs) = concat' xs ++ x
 replicate' :: Int -> a -> [a]
 replicate' 0 x = []
 replicate' n x = replicate' (n-1) x ++ [x]
+
+merge :: Ord a => [a] -> [a] -> [a]
+merge [] ys = ys
+merge xs [] = xs
+merge (x:xs) (y:ys) | x <= y = x : y : merge xs ys
+                    | otherwise = y : x : merge xs ys
