@@ -1,4 +1,4 @@
-import Prelude hiding ((++))
+import Prelude hiding ((++), (!!))
 
 factorial :: Int -> Int
 factorial 0 = 1
@@ -26,10 +26,19 @@ drop' 0 xs = xs
 drop' _ [] = []
 drop' n (_:xs) = drop (n-1) xs
 
-
 (++) :: [a] -> [a] -> [a]
 [] ++ ys = ys
 (x:xs) ++ ys = x : (xs ++ ys)
+
+(!!) :: [a] -> Int -> a
+(x:xs) !! 0 = x
+(x:xs) !! n = xs !! (n-1)
+[] !! _ = error "Out of bounds"
+
+elem' :: Eq a => a -> [a] -> Bool
+elem' _ [] = False
+elem' x (y:ys) | x == y = True
+               | otherwise = elem' x ys
 
 and' :: [Bool] -> Bool
 and' [] = True
