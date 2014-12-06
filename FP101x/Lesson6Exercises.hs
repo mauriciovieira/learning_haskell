@@ -146,6 +146,65 @@ testTakeWhileDTrue    = takeWhileD (\d -> d >= 0 && d < 10) [1..10]  == [1 ..  9
 testTakeWhileDTrueInf = takeWhileD (\d -> d >= 2 && d < 20) [2..]    == [2 .. 19]
 testTakeWhileDFalse   = takeWhileD (\d -> d >= 0 && d < 10) [11..20] /= [       ]
 
+{-- Exercise 5
+ - https://www.haskell.org/haskellwiki/Fold
+ --}
+foldt            :: (a -> a -> a) -> a -> [a] -> a
+foldt f z []     = z
+foldt f z [x]    = x
+foldt f z xs     = foldt f z (pairs f xs)
+
+pairs            :: (a -> a -> a) -> [a] -> [a]
+pairs f (x:y:t)  = f x y : pairs f t
+pairs f t        = t
+
+result5R = "(1+(2+(3+(4+(5+(6+(7+(8+(9+(10+(11+(12+(13+0)))))))))))))"
+result5L = "(((((((((((((0+1)+2)+3)+4)+5)+6)+7)+8)+9)+10)+11)+12)+13)"
+result5T = "((((1+2)+(3+4))+((5+6)+(7+8)))+(((9+10)+(11+12))+13))"
+
+testMapR = foldr (\x y -> concat ["(",x,"+",y,")"]) "0" (map show [1..13]) == result5R
+testMapL = foldl (\x y -> concat ["(",x,"+",y,")"]) "0" (map show [1..13]) == result5L
+testMapT = foldt (\x y -> concat ["(",x,"+",y,")"]) "0" (map show [1..13]) == result5T
+
+mapA :: (a -> b) -> [a] -> [b]
+mapA f = foldr (\ x xs -> xs ++ [f x]) []
+
+testMapAR = foldr (\x y -> concat ["(",x,"+",y,")"]) "0" (mapA show [1..13]) == result5R
+testMapAL = foldl (\x y -> concat ["(",x,"+",y,")"]) "0" (mapA show [1..13]) == result5L
+testMapAT = foldt (\x y -> concat ["(",x,"+",y,")"]) "0" (mapA show [1..13]) == result5T
+
 {-
+mapB :: (a -> b) -> [a] -> [b]
+mapB f = foldr (\ x xs -> f x ++ xs) []
+
+testMapBR = foldr (\x y -> concat ["(",x,"+",y,")"]) "0" (mapB show [1..13]) == result5R
+testMapBL = foldl (\x y -> concat ["(",x,"+",y,")"]) "0" (mapB show [1..13]) == result5L
+testMapBT = foldt (\x y -> concat ["(",x,"+",y,")"]) "0" (mapB show [1..13]) == result5T
 -}
 
+mapC :: (a -> b) -> [a] -> [b]
+mapC f = foldl (\ xs x -> f x : xs) []
+
+testMapCR = foldr (\x y -> concat ["(",x,"+",y,")"]) "0" (mapC show [1..13]) == result5R
+testMapCL = foldl (\x y -> concat ["(",x,"+",y,")"]) "0" (mapC show [1..13]) == result5L
+testMapCT = foldt (\x y -> concat ["(",x,"+",y,")"]) "0" (mapC show [1..13]) == result5T
+
+mapD :: (a -> b) -> [a] -> [b]
+mapD f = foldl (\ xs x -> xs ++ [f x]) []
+
+testMapDR = foldr (\x y -> concat ["(",x,"+",y,")"]) "0" (mapD show [1..13]) == result5R
+testMapDL = foldl (\x y -> concat ["(",x,"+",y,")"]) "0" (mapD show [1..13]) == result5L
+testMapDT = foldt (\x y -> concat ["(",x,"+",y,")"]) "0" (mapD show [1..13]) == result5T
+
+
+{- Exercise 7
+ -}
+dec2int :: [Integer] -> Integer
+dec2int = foldl (\ x y -> 10 * x + y) 0
+
+testDec2Int = dec2int [2,3,5,6,8] == 23568
+
+{- Exercise 8 -}
+-- sumsqreven = compose [sum, map (^2), filter even]
+compose :: [a -> a] -> (a -> a)
+compose = foldr (.) id
